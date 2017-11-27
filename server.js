@@ -4,6 +4,8 @@ port = process.env.PORT || 3000,
 mongoose = require('mongoose'),
 Task = require('./models/todoListModel'), //created model loading here
 bodyParser = require('body-parser');
+var path = require('path');
+
 //var expressLayouts = require('express-ejs-layouts')
 
 // mongoose instance connection url connection
@@ -11,12 +13,13 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/Tododb'); 
 
 // set the view engine to ejs
-//app.set('views', __dirname + '/views');
+app.use(express.static('views'));
 app.set('view engine', 'ejs');
 
 //app.use(expressLayouts);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 var routes = require('./routes/todoListRoutes'); //importing route
 routes(app); //register the route
@@ -27,5 +30,4 @@ app.use(function(req, res) {
 });
 
 app.listen(port);
-
 console.log('todo list RESTful API server started on: ' + port);
