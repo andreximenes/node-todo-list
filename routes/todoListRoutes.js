@@ -1,7 +1,8 @@
 'use strict';
-module.exports = function(app) {
+module.exports = function(app, passport) {
   var todoList = require('../controllers/todoListController');
   var viewController = require('../controllers/viewController');
+  var loginController = require('../controllers/loginController');
 
   // todoList Routes
   app.route('/api/tasks')
@@ -14,7 +15,26 @@ module.exports = function(app) {
     .delete(todoList.delete_a_task);
 
   // views
-  app.route('/home')
-    .get(viewController.getHome);
+  app.get('/', viewController.getHome);
+  app.get('/login', loginController.login);
+  app.get('/profile', isLoggedIn, loginController.profile);
+  
+  app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/login');
+  });
+
+  //link que estou usando para estudo
+  //https://scotch.io/tutorials/easy-node-authentication-setup-and-local#toc-application-structure
+
+  // route middleware to make sure a user is logged in
+  function isLoggedIn(req, res, next) {
+    if (res.isAuthenticated()) {
+      console.log('Usuário Logado');
+      return next();  
+    }
+        
+    res.redirect('/login');
+  }
 
 };
